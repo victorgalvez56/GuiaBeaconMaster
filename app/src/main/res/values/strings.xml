@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">GuiaBeaconMaster</string>
-
+    <string name="location_access_needed">Esta aplicación necesita acceso a la localización</string>
+    <string name="grant_location_access">Por favor conceda permisos de localización para que la aplicación pueda detectar beacons</string>
+    <string name="not_support_bluetooth_msg">Este dispositivo no soporta bluetooth, no es posible buscar beacons</string>
+    <string name="location_disabled">Localización en modo alta precisión no activado</string>
+    <string name="location_settings">Abrir ajustes de localización</string>
+    <string name="location_not_granted">Ya que el permiso de localización no ha sido concedido,</string>
+    <string name="cannot_discover_beacons">esta aplicación no podrá buscar beacons</string>
+    <string name="funcionality_limited">Funcionalidad limitada</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_panel">Panel</string>
