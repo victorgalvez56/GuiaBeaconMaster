@@ -6,8 +6,11 @@
     <string name="title_activity_panel">Panel</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">Guía Campus Beacon</string>
+    <string name="nav_header_subtitle">Universidad Tecnológica del Perú</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_sign_up">SignUp</string>
+    <string name="crear_cuenta">CREAR CUENTA</string>
+    <string name="title_activity_horarios">Horarios</string>
 </resources>

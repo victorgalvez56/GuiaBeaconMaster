@@ -28,7 +28,7 @@ public class Login extends Fragment implements Response.Listener<JSONObject>, Re
     RequestQueue rq;
     JsonRequest jrq;
     EditText cajaUser, cajaPwd;
-    Button btnConsultar;
+    Button btnConsultar,btnRegistrar;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -37,11 +37,19 @@ public class Login extends Fragment implements Response.Listener<JSONObject>, Re
         cajaUser=(EditText) vista.findViewById(R.id.txtUser);
         cajaPwd=(EditText) vista.findViewById(R.id.txtPwd);
         btnConsultar = (Button) vista.findViewById(R.id.btnSesion);
+        btnRegistrar = (Button) vista.findViewById(R.id.btn_registrar);
         rq= Volley.newRequestQueue(getContext());
         btnConsultar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 iniciarSesion();
+            }
+        });
+
+        btnRegistrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registrar();
             }
         });
         return vista;
@@ -78,7 +86,15 @@ public class Login extends Fragment implements Response.Listener<JSONObject>, Re
 
 
     }
+    void registrar() {
 
+        Registrar fr=new Registrar();
+        //fr.setArguments(bn);
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.escenario,fr)
+                .addToBackStack(null)
+                .commit();
+    }
     private void iniciarSesion(){
         String url="http://159.89.238.35:9080/Beacons/sesion.php?user="+cajaUser.getText().toString()+
                 "&pwd="+cajaPwd.getText().toString();

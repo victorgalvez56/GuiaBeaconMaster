@@ -2,7 +2,15 @@ package com.example.guiabeaconmaster;
 
 public class User {
     private int id,estado;
-    private String names,user,pwd;
+    private String names,user,pwd,telefono;
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
 
     public int getId() {
         return id;
