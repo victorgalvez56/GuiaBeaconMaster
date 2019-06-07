@@ -1,30 +1,26 @@
 package com.example.guiabeaconmaster;
 
 import android.Manifest;
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.provider.Settings;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import org.altbeacon.beacon.Beacon;
@@ -38,36 +34,28 @@ import org.altbeacon.beacon.Region;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
-public class Horarios extends Fragment implements View.OnClickListener, BeaconConsumer,
+public class Horarios2 extends AppCompatActivity implements View.OnClickListener, BeaconConsumer,
         RangeNotifier {
-    protected final String TAG = Horarios.this.getClass().getSimpleName();;
+    protected final String TAG = Horarios2.this.getClass().getSimpleName();;
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
     private static final int REQUEST_ENABLE_BLUETOOTH = 1;
     private static final long DEFAULT_SCAN_PERIOD_MS = 6000l;
     private static final String ALL_BEACONS_REGION = "AllBeaconsRegion";
+
+    // Para interactuar con los beacons desde una actividad
     private BeaconManager mBeaconManager;
 
     // Representa el criterio de campos con los que buscar beacons
     private Region mRegion;
-    private Context mContext;
-    Button getStartButton = (Button) getView().findViewById(R.id.startReadingBeaconsButton);
-    Button getStopButton = (Button) getView().findViewById(R.id.stopReadingBeaconsButton);
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_horarios2);
 
+        getStartButton().setOnClickListener(this);
+        getStopButton().setOnClickListener(this);
 
-        onCreate1();
-        return inflater.inflate(R.layout.fragment_horarios, container, false);
-    }
-
-    public void onCreate1() {
-
-
-
-
-        mBeaconManager = BeaconManager.getInstanceForApplication (this.getApplicationContext());
+        mBeaconManager = BeaconManager.getInstanceForApplication(this);
 
         // Fijar un protocolo beacon, Eddystone en este caso
         mBeaconManager.getBeaconParsers().add(new BeaconParser().
@@ -76,17 +64,16 @@ public class Horarios extends Fragment implements View.OnClickListener, BeaconCo
         ArrayList<Identifier> identifiers = new ArrayList<>();
 
         mRegion = new Region(ALL_BEACONS_REGION, identifiers);
-    }
-
+        }
 
     @Override
     public void onClick(View view) {
-        if (view.equals(this.getStartButton)) {
+        if (view.equals(findViewById(R.id.startReadingBeaconsButton))) {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
                 // Si los permisos de localización todavía no se han concedido, solicitarlos
-                if (ActivityCompat.checkSelfPermission(getContext(),Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) !=
                         PackageManager.PERMISSION_GRANTED) {
 
                     askForLocationPermissions();
@@ -101,7 +88,7 @@ public class Horarios extends Fragment implements View.OnClickListener, BeaconCo
                 prepareDetection();
             }
 
-        } else if (view.equals(this.getStopButton)) {
+        } else if (view.equals(findViewById(R.id.stopReadingBeaconsButton))) {
 
             stopDetectingBeacons();
 
@@ -113,7 +100,6 @@ public class Horarios extends Fragment implements View.OnClickListener, BeaconCo
             }
         }
     }
-
     private void prepareDetection() {
 
         if (!isLocationEnabled()) {
@@ -140,17 +126,18 @@ public class Horarios extends Fragment implements View.OnClickListener, BeaconCo
             }
         }
     }
+
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == REQUEST_ENABLE_BLUETOOTH) {
 
             // Usuario ha activado el bluetooth
-            if (resultCode == Activity.RESULT_OK) {
+            if (resultCode == RESULT_OK) {
 
                 startDetectingBeacons();
 
-            } else if (resultCode == Activity.RESULT_CANCELED) { // User refuses to enable bluetooth
+            } else if (resultCode == RESULT_CANCELED) { // User refuses to enable bluetooth
 
                 showToastMessage(getString(R.string.no_bluetooth_msg));
             }
@@ -159,9 +146,6 @@ public class Horarios extends Fragment implements View.OnClickListener, BeaconCo
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    /**
-     * Empezar a detectar los beacons, ocultando o mostrando los botones correspondientes
-     */
     private void startDetectingBeacons() {
 
         // Fijar un periodo de escaneo
@@ -178,6 +162,7 @@ public class Horarios extends Fragment implements View.OnClickListener, BeaconCo
         getStopButton().setEnabled(true);
         getStopButton().setAlpha(1);
     }
+
 
     @Override
     public void onBeaconServiceConnect() {
@@ -196,11 +181,6 @@ public class Horarios extends Fragment implements View.OnClickListener, BeaconCo
         mBeaconManager.addRangeNotifier(this);
     }
 
-
-    /**
-     * Método llamado cada DEFAULT_SCAN_PERIOD_MS segundos con los beacons detectados durante ese
-     * periodo
-     */
     @Override
     public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
 
@@ -213,7 +193,6 @@ public class Horarios extends Fragment implements View.OnClickListener, BeaconCo
         }
 
     }
-
     private void stopDetectingBeacons() {
 
         try {
@@ -237,12 +216,9 @@ public class Horarios extends Fragment implements View.OnClickListener, BeaconCo
         getStopButton().setAlpha(.5f);
     }
 
-    /**
-     * Comprobar permisión de localización para Android >= M
-     */
     private void askForLocationPermissions() {
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.location_access_needed);
         builder.setMessage(R.string.grant_location_access);
         builder.setPositiveButton(android.R.string.ok, null);
@@ -255,7 +231,6 @@ public class Horarios extends Fragment implements View.OnClickListener, BeaconCo
         });
         builder.show();
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -264,7 +239,7 @@ public class Horarios extends Fragment implements View.OnClickListener, BeaconCo
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     prepareDetection();
                 } else {
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle(R.string.funcionality_limited);
                     builder.setMessage(getString(R.string.location_not_granted) +
                             getString(R.string.cannot_discover_beacons));
@@ -281,15 +256,9 @@ public class Horarios extends Fragment implements View.OnClickListener, BeaconCo
             }
         }
     }
-
-    /**
-     * Comprobar si la localización está activada
-     *
-     * @return true si la localización esta activada, false en caso contrario
-     */
     private boolean isLocationEnabled() {
 
-        LocationManager lm = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        LocationManager lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
         boolean networkLocationEnabled = false;
 
@@ -313,7 +282,7 @@ public class Horarios extends Fragment implements View.OnClickListener, BeaconCo
     private void askToTurnOnLocation() {
 
         // Notificar al usuario
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getApplicationContext());
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setMessage(R.string.location_disabled);
         dialog.setPositiveButton(R.string.location_settings, new DialogInterface.OnClickListener() {
             @Override
@@ -327,47 +296,27 @@ public class Horarios extends Fragment implements View.OnClickListener, BeaconCo
     }
 
     private Button getStartButton() {
-        return (Button) getStartButton;
+        return (Button) findViewById(R.id.startReadingBeaconsButton);
     }
 
     private Button getStopButton() {
-        return (Button) getStopButton;
+        return (Button) findViewById(R.id.stopReadingBeaconsButton);
     }
 
-    /**
-     * Mostrar mensaje
-     *
-     * @param message mensaje a enseñar
-     */
     private void showToastMessage (String message) {
-        Toast toast = Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
+        Toast toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
     }
 
     @Override
-    public void onDestroy() {
+    protected void onDestroy() {
         super.onDestroy();
         mBeaconManager.removeAllRangeNotifiers();
         mBeaconManager.unbind(this);
     }
-
-
-
-
     @Override
-    public Context getApplicationContext() {
-        return null;
-    }
-
-    @Override
-    public void unbindService(ServiceConnection serviceConnection) {
+    public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
-
-    @Override
-    public boolean bindService(Intent intent, ServiceConnection serviceConnection, int i) {
-        return false;
-    }
-
 }
