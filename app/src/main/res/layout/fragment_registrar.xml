@@ -62,7 +62,7 @@
             android:textColorHint="#ccc" />
 
         <EditText
-            android:id="@+id/txtuser"
+            android:id="@+id/txtusers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
@@ -79,7 +79,7 @@
             android:textColorHint="#ccc" />
 
         <EditText
-            android:id="@+id/txtpwd"
+            android:id="@+id/txtpwds"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
